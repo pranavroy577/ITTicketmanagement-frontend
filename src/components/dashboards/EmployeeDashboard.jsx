@@ -28,13 +28,17 @@ const EmployeeDashboard = () => {
   // Apply filters
   const filteredTickets = useMemo(() => {
     return userTickets.filter(ticket => {
-      const categoryMatch = !filters.category || 
+      const categoryMatch =
+        !filters.category ||
         ticket.category.toLowerCase().includes(filters.category.toLowerCase()) ||
         ticket.subcategory.toLowerCase().includes(filters.category.toLowerCase());
-      
-      const dateMatch = !filters.date || 
-        new Date(ticket.dateCreated).toLocaleDateString().includes(filters.date);
-      
+
+      // ⭐ FIXED DATE MATCH — RELIABLE ISO MATCHING ⭐
+      const ticketDateISO = ticket.dateCreated.slice(0, 10); // "2025-01-15"
+      const dateMatch =
+        !filters.date ||
+        ticketDateISO === filters.date;
+
       return categoryMatch && dateMatch;
     });
   }, [userTickets, filters]);
@@ -92,7 +96,6 @@ const EmployeeDashboard = () => {
   };
 
   const handleSort = (field, direction) => {
-    // Sort logic would be implemented here
     console.log('Sort by:', field, direction);
   };
 
@@ -110,7 +113,7 @@ const EmployeeDashboard = () => {
       <Sidebar />
       <div className="ml-64">
         <Header title={`Welcome, ${user.name}`} />
-        
+
         <main className="p-6">
           {currentView === 'dashboard' && (
             <>
@@ -134,7 +137,6 @@ const EmployeeDashboard = () => {
                   );
                 })}
               </div>
-
 
               {/* Recent Tickets Preview */}
               <div className="card">
